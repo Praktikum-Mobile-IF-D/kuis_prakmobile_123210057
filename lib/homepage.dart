@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz/data_buku.dart';
 import 'package:quiz/detailpage.dart';
-import 'package:quiz/login.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -10,58 +9,78 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
         title: Text(
           'Data Buku',
           style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.blue,
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          final DataBuku buku = listBuku[index];
-          return InkWell(
+      body: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1, crossAxisSpacing: 2, mainAxisSpacing: 1),
+          itemCount: listBuku.length,
+          itemBuilder: (context, index) {
+            final DataBuku buku = listBuku[index];
+            return InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return Detailpage(buku : buku);
+                  return Detailpage(buku: buku);
                 }));
               },
               child: Card(
                 child: Row(
+                  //crossAxisAlignment: CrossAxisAlignment.start,  // Not needed here
                   children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.rectangle,
-                        image: DecorationImage(
-                          image: Image.network(buku.imageLink[0])
-                        ),
-                      ),
+                    Image.network(
+                      buku.imageLink,
+                      height: 300, // Adjust height as needed
+                      width: 200,
                     ),
-                    SizedBox(width: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(buku.title),
-                            Text(buku.author),
-                            Text(buku.pages),
-                          ],
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            buku.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.blue,
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Penulis: ${buku.author}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            '${buku.pages.toString()} halaman',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-          );
-        },
-      ),
+            );
+          }),
     );
   }
 }

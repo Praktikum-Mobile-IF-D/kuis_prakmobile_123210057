@@ -19,8 +19,8 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Login Page"),
-          backgroundColor: Colors.deepPurple[100],
+          title: Text("Login"),
+          backgroundColor: Colors.white,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,11 +40,8 @@ class _LoginState extends State<Login> {
       child: TextFormField(
         onChanged: (value) => email = value,
         decoration: InputDecoration(
-          label: Text("Email"),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            borderSide: BorderSide(color: Colors.purple)
-          )
+            label: Text("Email"),
+            prefixIcon: Icon(Icons.email),
         ),
       ),
     );
@@ -56,19 +53,8 @@ class _LoginState extends State<Login> {
       child: TextFormField(
         onChanged: (value) => password = value,
         decoration: InputDecoration(
-            suffix: IconButton(
-              onPressed: () {
-                setState(() {
-                  isVisible = !isVisible;
-                });
-              },
-              icon: (isVisible) ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
-            ),
           label: Text("Password"),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                borderSide: BorderSide(color: Colors.purple)
-            )
+          prefixIcon: Icon(Icons.lock),
         ),
       ),
     );
@@ -80,31 +66,41 @@ class _LoginState extends State<Login> {
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: (isLoginSuccess) ? Colors.deepPurple[100] : Colors.red),
+            backgroundColor: (isLoginSuccess) ? Colors.deepPurple[100] : Colors.red),
         onPressed: () {
           String text = "";
-          if (email == "@sylviathalia.gmail.com" && password == "sylviathalia28") {
+          if (email.contains('@') && password.length > 8) {
             setState(() {
               text = "Login Success";
               isLoginSuccess = true;
             });
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
               return Homepage();
-          }));
-          } else {
+            }));
+          } else if (!email.contains('@') && password.length < 8){
             setState(() {
-            text = "Login Failed";
-            isLoginSuccess = false;
+              text = "Login Failed";
+              isLoginSuccess = false;
+            });
+          } else if (!email.contains('@')){
+            setState(() {
+              text = "Email tidak valid";
+              isLoginSuccess = false;
+            });
+          } else if (password.length < 8){
+            setState(() {
+              text = "Password harus lebih dari 8 karakter";
+              isLoginSuccess = false;
             });
           }
           SnackBar snackBar = SnackBar(
             content: Text(text),
-          backgroundColor: (isLoginSuccess) ? Colors.deepPurple[100] : Colors.red,
+            backgroundColor: (isLoginSuccess) ? Colors.deepPurple[100] : Colors.red,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         },
         child: const Text('Login'),
-        ),
-      );
+      ),
+    );
   }
 }
